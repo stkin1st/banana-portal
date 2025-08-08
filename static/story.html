@@ -39,9 +39,29 @@
       transform: translateY(0);
     }
 
-    .back:hover{
+    .back{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      cursor:pointer;
+    }
+
+    .back:active{
+      animation: squish 0.25s ease;
       background:var(--accent-dark);
-      transform: translateY(-2px);
+    }
+
+    @keyframes squish {
+      0%   { transform: scale(1, 1); }
+      30%  { transform: scale(1.15, 0.85); }
+      50%  { transform: scale(0.9, 1.1); }
+      70%  { transform: scale(1.05, 0.95); }
+      100% { transform: scale(1, 1); }
     }
 
     .button-submit{
@@ -65,9 +85,6 @@
       transform: translateY(0);
     }
 
-    .back:active{
-      transform: translateY(0);
-    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -95,16 +112,6 @@
       font-weight:800;
       letter-spacing:0.2px;
       font-size:20px;
-    }
-    .back{
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:10px;
-      background:var(--accent);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(47,122,255,.25);
     }
 
     .hero{
