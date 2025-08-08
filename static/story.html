@@ -18,56 +18,6 @@
       --max:1100px;
     }
 
-    .button{
-      display:inline-block;
-      padding:10px 16px;
-      border-radius:10px;
-      background:var(--accent);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(110,190,68,.25);
-      transition: background-color 0.2s ease, transform 0.15s ease;
-    }
-
-    .button:hover{
-      background:var(--accent-dark);
-      transform: translateY(-2px);
-    }
-
-    .button:active{
-      transform: translateY(0);
-    }
-
-    .back:hover{
-      background:var(--accent-dark);
-      transform: translateY(-2px);
-    }
-
-    .button-submit{
-      padding:10px 14px;
-      border-radius:10px;
-      background:var(--accent);
-      color:#fff;
-      border:0;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(110,190,68,.25);
-      cursor:pointer;
-      transition: background-color 0.2s ease, transform 0.15s ease;
-    }
-
-    .button-submit:hover{
-      background:var(--accent-dark);
-      transform: translateY(-2px);
-    }
-
-    .button-submit:active{
-      transform: translateY(0);
-    }
-
-    .back:active{
-      transform: translateY(0);
-    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -84,6 +34,7 @@
       padding:24px 20px 64px;
     }
 
+    /* -------- Header -------- */
     header{
       display:flex;
       align-items:center;
@@ -96,6 +47,8 @@
       letter-spacing:0.2px;
       font-size:20px;
     }
+
+    /* Primary “Enter the Portal” button (it's an <a> with class="back") */
     .back{
       display:inline-block;
       padding:10px 14px;
@@ -104,9 +57,63 @@
       color:#fff;
       text-decoration:none;
       font-weight:600;
-      box-shadow:0 6px 18px rgba(47,122,255,.25);
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      transform: translateY(0);
+      transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
+      cursor:pointer;
+    }
+    .back:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow:0 10px 24px rgba(110,190,68,.28);
+    }
+    .back:active{
+      transform: translateY(0);
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
     }
 
+    /* Optional generic button class if you use it elsewhere */
+    .button{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
+    }
+    .button:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow:0 10px 24px rgba(110,190,68,.28);
+    }
+    .button:active{ transform: translateY(0); }
+
+    /* Submit button in the contact form */
+    .button-submit{
+      padding:10px 14px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      cursor:pointer;
+      transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
+    }
+    .button-submit:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow:0 10px 24px rgba(110,190,68,.28);
+    }
+    .button-submit:active{
+      transform: translateY(0);
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+    }
+
+    /* -------- Card / Content -------- */
     .hero{
       display:grid;
       grid-template-columns:1fr;
@@ -146,63 +153,54 @@
       font-size:14px;
     }
 
-    @media (min-width: 900px){
-      .hero{ grid-template-columns: 460px 1fr; padding:28px; gap:34px;}
-      .copy h1{ font-size:52px;}
-    }
-
     footer{
       margin-top:28px;
       text-align:center;
       color:var(--ink-sub);
       font-size:14px;
+    }
 
-      /* --- Mobile header polish --- */
-      @media (max-width: 640px){
-        .wrap{
-          /* nicer edges on iOS notch phones */
-          padding-left: max(16px, env(safe-area-inset-left));
-          padding-right: max(16px, env(safe-area-inset-right));
-        }
+    /* -------- Responsive tweaks -------- */
+    @media (min-width:900px){
+      .hero{ grid-template-columns:460px 1fr; padding:28px; gap:34px; }
+      .copy h1{ font-size:52px; }
+    }
 
-        header{
-          flex-wrap: wrap;               /* allow title + button to break to 2 lines */
-          align-items: flex-start;
-          gap: 10px 12px;
-          margin-bottom: 18px;
-        }
-
-        .brand{
-          font-size: 18px;               /* was 20 */
-          line-height: 1.1;
-          margin-right: auto;            /* push button to next line when tight */
-          order: 1;
-        }
-
-        .back{
-          order: 2;
-          width: 100%;                   /* full-width tap target */
-          text-align: center;
-          padding: 12px 16px;            /* slightly larger tap area */
-          font-size: 18px;
-          border-radius: 12px;
-        }
-
-        .hero{
-          padding: 16px;                 /* lighter card padding on small screens */
-          gap: 18px;
-        }
-
-        .copy h1{
-          font-size: 34px;               /* headline scales down a bit */
-        }
+    @media (max-width:640px){
+      .wrap{
+        padding-left:max(16px, env(safe-area-inset-left));
+        padding-right:max(16px, env(safe-area-inset-right));
       }
-
-      /* tiny phones */
-      @media (max-width: 380px){
-        .copy h1{ font-size: 30px; }
-        .back{ font-size: 16px; padding: 10px 14px; }
+      header{
+        flex-wrap:wrap;
+        align-items:flex-start;
+        gap:10px 12px;
+        margin-bottom:18px;
       }
+      .brand{
+        font-size:18px;
+        line-height:1.1;
+        margin-right:auto;
+        order:1;
+      }
+      .back{
+        order:2;
+        width:100%;
+        text-align:center;
+        padding:12px 16px;
+        font-size:18px;
+        border-radius:12px;
+      }
+      .hero{
+        padding:16px;
+        gap:18px;
+      }
+      .copy h1{ font-size:34px; }
+    }
+
+    @media (max-width:380px){
+      .copy h1{ font-size:30px; }
+      .back{ font-size:16px; padding:10px 14px; }
     }
   </style>
 </head>
