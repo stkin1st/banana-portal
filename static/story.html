@@ -39,34 +39,9 @@
       transform: translateY(0);
     }
 
-    .back{
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:10px;
-      background:var(--accent);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(110,190,68,.25);
-      cursor:pointer;
-    }
-
-    /* run squish when we add the class (works better than :active) */
-    .back.squishing{
-      animation: squish 220ms ease;
-      will-change: transform;
-    }
-    /* optional: be nice to folks who prefer less motion */
-    @media (prefers-reduced-motion: reduce){
-      .back.squishing{ animation: none; }
-    }
-
-    @keyframes squish {
-      0%   { transform: scale(1, 1); }
-      30%  { transform: scale(1.15, 0.85); }
-      50%  { transform: scale(0.9, 1.1); }
-      70%  { transform: scale(1.05, 0.95); }
-      100% { transform: scale(1, 1); }
+    .back:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
     }
 
     .button-submit{
@@ -90,6 +65,9 @@
       transform: translateY(0);
     }
 
+    .back:active{
+      transform: translateY(0);
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -117,6 +95,16 @@
       font-weight:800;
       letter-spacing:0.2px;
       font-size:20px;
+    }
+    .back{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(47,122,255,.25);
     }
 
     .hero{
@@ -175,7 +163,7 @@
   <div class="wrap">
     <header>
       <div class="brand">🍌 Banana Portal</div>
-      <a class="back" id="portalButton" href="index.html">Enter the Portal</a>
+      <a class="button" href="index.html">Enter the Portal</a>
     </header>
 
     <section class="hero">
