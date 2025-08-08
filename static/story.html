@@ -44,6 +44,27 @@
       transform: translateY(-2px);
     }
 
+    .button-submit{
+      padding:10px 14px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      cursor:pointer;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .button-submit:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    .button-submit:active{
+      transform: translateY(0);
+    }
+
     .back:active{
       transform: translateY(0);
     }
@@ -209,7 +230,7 @@
           <p><input type="email" name="email" placeholder="Email" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;"></p>
           <p><textarea name="message" rows="4" placeholder="What do you want to make?" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;"></textarea></p>
           <p>
-            <button type="submit" style="padding:10px 14px;border-radius:10px;background:#6EBE44;color:#fff;border:0;font-weight:600;">
+            <button type="submit" class="button-submit">
               Send
             </button>
           </p>
