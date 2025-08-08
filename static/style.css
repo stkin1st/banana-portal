@@ -24,7 +24,7 @@ body {
   border-radius: 12px;
   background: #fff;   /* subtle mat */
   padding: 8px;       /* mat spacing */
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  box-shadow: none !important;
 }
 
 /* Slightly tighter mat on very small screens */
