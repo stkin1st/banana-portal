@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Banana Portal — Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FFF7CF; --ink:#222; --ink-sub:#555;
+      --accent:#6EBE44; --accent-dark:#5AA136;
+      --card:#fff; --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink); background:var(--bg); line-height:1.6;
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px 20px 64px;}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px;
+    }
+    .brand{font-weight:800; letter-spacing:.2px; font-size:20px;}
+    .button{
+      display:inline-block; padding:10px 14px; border-radius:10px; background:var(--accent); color:#fff;
+      text-decoration:none; font-weight:600; box-shadow:0 6px 18px rgba(110,190,68,.25);
+      transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
+    }
+    .button:hover{ background:var(--accent-dark); transform:translateY(-2px); box-shadow:0 10px 24px rgba(110,190,68,.28); }
+
+    h1{ margin:0 0 12px; letter-spacing:-0.5px; }
+    .sub{ color:var(--ink-sub); margin:0 0 20px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap:14px;
+      background:var(--card);
+      padding:16px;
+      border-radius:16px;
+      box-shadow:0 10px 40px rgba(0,0,0,.06);
+    }
+    .tile{
+      position:relative; overflow:hidden; border-radius:12px; background:#fafafa; cursor:pointer;
+    }
+    .tile img{
+      width:100%; height:220px; object-fit:cover; display:block;
+      transition: transform .25s ease;
+    }
+    .tile:hover img{ transform:scale(1.03); }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed; inset:0; background:rgba(0,0,0,.7);
+      display:none; align-items:center; justify-content:center; padding:20px; z-index:9999;
+    }
+    .lightbox.open{ display:flex; }
+    .lightbox img{
+      max-width:min(92vw, 1200px); max-height:88vh; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,.4);
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:14px; background:#fff; color:#111; border-radius:999px;
+      padding:8px 12px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2);
+    }
+
+    @media (max-width:640px){
+      .button{ width:100%; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">🍌 Banana Portal</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="button" href="index.html">Enter the Portal</a>
+        <a class="button" href="story.html">Read the Story</a>
+      </div>
+    </header>
+
+    <h1>Gallery</h1>
+    <p class="sub">Framed bananas, close-ups, and behind-the-scenes.</p>
+
+    <section class="grid" id="gallery">
+      <!-- Thumbnails: add/remove as needed; update src paths to match your repo -->
+      <figure class="tile"><img loading="lazy" src="images/framed_01.jpg" alt="Framed banana 1" data-full="images/framed_01.jpg"></figure>
+      <figure class="tile"><img loading="lazy" src="images/framed_02.jpg" alt="Framed banana 2" data-full="images/framed_02.jpg"></figure>
+      <figure class="tile"><img loading="lazy" src="images/framed_03.jpg" alt="Framed banana 3" data-full="images/framed_03.jpg"></figure>
+      <figure class="tile"><img loading="lazy" src="images/banana_closeup.jpg" alt="Banana close-up" data-full="images/banana_closeup.jpg"></figure>
+      <!-- duplicate line and swap filenames for more -->
+    </section>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="close" aria-label="Close">✕</button>
+    <img src="" alt="">
+  </div>
+
+  <script>
+    // Simple lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    document.getElementById('gallery').addEventListener('click', (e) => {
+      const img = e.target.closest('img');
+      if (!img) return;
+      lbImg.src = img.dataset.full || img.src;
+      lb.classList.add('open');
+    });
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb || e.target.classList.contains('close')) lb.classList.remove('open');
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
+  </script>
+</body>
+</html>
