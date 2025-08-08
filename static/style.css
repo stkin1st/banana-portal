@@ -8,29 +8,23 @@ body {
   height: 100vh;
 }
 
-/* Banana hand on the homepage (contour shadow) */
+#bananaHand {
+  width: 600px;
+  height: 880px;
+  cursor: pointer;
+}
+
+/* Responsive framed banana image */
 #bananaHand {
   display: block;
   margin: 20px auto;
   width: 100%;
-  max-width: 600px;     /* caps size on big screens */
-  height: auto;         /* keep aspect */
-  cursor: pointer;
-
-  /* Remove mat/box so we don't get a big rectangular shadow */
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-
-  /* Shadow that follows PNG transparency */
-  filter: drop-shadow(0 14px 30px rgba(0,0,0,.18));
-}
-
-/* Slightly smaller on tiny phones */
-@media (max-width: 420px) {
-  #bananaHand {
-    max-width: 92vw;
-  }
+  max-width: 600px;   /* caps size on big screens */
+  height: auto;       /* keeps aspect ratio */
+  border-radius: 12px;
+  background: #fff;   /* subtle mat */
+  padding: 8px;       /* mat spacing */
+  box-shadow: none !important;
 }
 
 /* Slightly tighter mat on very small screens */
