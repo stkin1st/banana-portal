@@ -38,7 +38,7 @@
     header{
       display:flex;
       align-items:center;
-      justify-content:space-between;
+      justify-content:space-between; /* keeps button on right */
       gap:16px;
       margin-bottom:24px;
     }
@@ -48,8 +48,9 @@
       font-size:20px;
     }
 
-    /* Primary “Enter the Portal” button (it's an <a> with class="back") */
-    .back{
+    /* Primary button in header */
+    .back,
+    .button{
       display:inline-block;
       padding:10px 14px;
       border-radius:10px;
@@ -62,34 +63,17 @@
       transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
       cursor:pointer;
     }
-    .back:hover{
-      background:var(--accent-dark);
-      transform: translateY(-2px);
-      box-shadow:0 10px 24px rgba(110,190,68,.28);
-    }
-    .back:active{
-      transform: translateY(0);
-      box-shadow:0 6px 18px rgba(110,190,68,.25);
-    }
-
-    /* Optional generic button class if you use it elsewhere */
-    .button{
-      display:inline-block;
-      padding:10px 16px;
-      border-radius:10px;
-      background:var(--accent);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(110,190,68,.25);
-      transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
-    }
+    .back:hover,
     .button:hover{
       background:var(--accent-dark);
       transform: translateY(-2px);
       box-shadow:0 10px 24px rgba(110,190,68,.28);
     }
-    .button:active{ transform: translateY(0); }
+    .back:active,
+    .button:active{
+      transform: translateY(0);
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+    }
 
     /* Submit button in the contact form */
     .button-submit{
@@ -180,11 +164,10 @@
       .brand{
         font-size:18px;
         line-height:1.1;
-        margin-right:auto;
-        order:1;
+        order:1;             /* stays first */
       }
-      .back{
-        order:2;
+      .button{
+        order:2;             /* still after brand */
         width:100%;
         text-align:center;
         padding:12px 16px;
@@ -200,7 +183,7 @@
 
     @media (max-width:380px){
       .copy h1{ font-size:30px; }
-      .back{ font-size:16px; padding:10px 14px; }
+      .button{ font-size:16px; padding:10px 14px; }
     }
   </style>
 </head>
