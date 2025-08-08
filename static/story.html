@@ -156,6 +156,53 @@
       text-align:center;
       color:var(--ink-sub);
       font-size:14px;
+
+      /* --- Mobile header polish --- */
+      @media (max-width: 640px){
+        .wrap{
+          /* nicer edges on iOS notch phones */
+          padding-left: max(16px, env(safe-area-inset-left));
+          padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        header{
+          flex-wrap: wrap;               /* allow title + button to break to 2 lines */
+          align-items: flex-start;
+          gap: 10px 12px;
+          margin-bottom: 18px;
+        }
+
+        .brand{
+          font-size: 18px;               /* was 20 */
+          line-height: 1.1;
+          margin-right: auto;            /* push button to next line when tight */
+          order: 1;
+        }
+
+        .back{
+          order: 2;
+          width: 100%;                   /* full-width tap target */
+          text-align: center;
+          padding: 12px 16px;            /* slightly larger tap area */
+          font-size: 18px;
+          border-radius: 12px;
+        }
+
+        .hero{
+          padding: 16px;                 /* lighter card padding on small screens */
+          gap: 18px;
+        }
+
+        .copy h1{
+          font-size: 34px;               /* headline scales down a bit */
+        }
+      }
+
+      /* tiny phones */
+      @media (max-width: 380px){
+        .copy h1{ font-size: 30px; }
+        .back{ font-size: 16px; padding: 10px 14px; }
+      }
     }
   </style>
 </head>
