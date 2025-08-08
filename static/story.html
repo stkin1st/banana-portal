@@ -13,8 +13,39 @@
       --ink:#222;
       --ink-sub:#555;
       --accent:#6EBE44;      /* banana sticker green */
+      --accent-dark:#5AA136; /* darker hover green */
       --card:#fff;
       --max:1100px;
+    }
+
+    .button{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(110,190,68,.25);
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .button:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    .button:active{
+      transform: translateY(0);
+    }
+
+    .back:hover{
+      background:var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    .back:active{
+      transform: translateY(0);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -111,7 +142,7 @@
   <div class="wrap">
     <header>
       <div class="brand">🍌 Banana Portal</div>
-      <a class="back" href="index.html">Enter the Portal</a>
+      <a class="button" href="index.html">Enter the Portal</a>
     </header>
 
     <section class="hero">
