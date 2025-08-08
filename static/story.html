@@ -51,9 +51,14 @@
       cursor:pointer;
     }
 
-    .back:active{
-      animation: squish 0.25s ease;
-      background:var(--accent-dark);
+    /* run squish when we add the class (works better than :active) */
+    .back.squishing{
+      animation: squish 220ms ease;
+      will-change: transform;
+    }
+    /* optional: be nice to folks who prefer less motion */
+    @media (prefers-reduced-motion: reduce){
+      .back.squishing{ animation: none; }
     }
 
     @keyframes squish {
@@ -170,7 +175,7 @@
   <div class="wrap">
     <header>
       <div class="brand">🍌 Banana Portal</div>
-      <a class="button" href="index.html">Enter the Portal</a>
+      <a class="back" id="portalButton" href="index.html">Enter the Portal</a>
     </header>
 
     <section class="hero">
