@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#bananaHand {
+  width: 600px;
+  height: 880px;
+  cursor: pointer;
+}
