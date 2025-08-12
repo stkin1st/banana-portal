@@ -20,9 +20,20 @@ window.addEventListener("resize", resizeCanvas);
 const bananaImg = new Image();
 bananaImg.src = "banana.png";
 
+let bananaBitmap = null;
+bananaImg.decode()
+  .then(() => createImageBitmap(bananaImg))
+  .then(b => { bananaBitmap = b; })
+  .catch(() => { /* fallback to bananaImg if decode/createImageBitmap not supported */ });
+
 // --- Breeze globals ---
 let windStrength = 0;   // signed: -1..+1-ish
 let windGust = 0;       // occasional spikes that decay
+// throttle orbit sorting to avoid z-order churn
+let orbitSortFrame = 0;
+let orbitAnimFrame = 0; // throttle orbit updates (update every Nth frame)
+const ORBIT_SPEED = 15.0; // raise to 1.5, 2, etc. to go faster; 0.5 to go slower
+let nowSec = 0; // frame timestamp in seconds (set once per frame in animate())
 
 class Banana {
   constructor() {
@@ -236,6 +247,47 @@ class Banana {
         // Hair of random flutter on angle
         this.angle += (Math.random() - 0.5) * 0.04;
 
+    } else if (currentEffect === "orbit") {
+      // center every frame so it adapts to resize
+      const cx = canvas.width * 0.5;
+      const cy = canvas.height * 0.5;
+
+      // speed wobble (uses global nowSec set once per frame)
+      const speedWobble = 0.7 + 0.3 * Math.sin(nowSec * 0.7 + this.wobbleSeed);
+      this.orbitAngle += this.orbitBaseSpeed * speedWobble * ORBIT_SPEED;
+
+      // slow breathing of radius — oscillate around a fixed base using per-banana speed
+      this.breathPhase += this.breathSpeed;
+      const baseR = this.orbitBaseRadius || this.orbitRadius;
+      const wobble = 1 + 0.03 * Math.sin(this.breathPhase);
+      this.orbitRadiusTarget = baseR * wobble;
+      // ease radius toward target
+      this.orbitRadius += (this.orbitRadiusTarget - this.orbitRadius) * 0.06;
+      this.depth = this.orbitRadius; // keep depth in sync
+
+      // gentle vertical bob
+      this.bobPhase = (this.bobPhase || Math.random() * Math.PI * 2) + this.bobSpeed;
+      const bob = Math.sin(this.bobPhase) * this.bobAmp;
+
+      // cache trig values
+      const cosA = Math.cos(this.orbitAngle);
+      const sinA = Math.sin(this.orbitAngle);
+
+      // position on circle + bob
+      this.x = cx + cosA * this.orbitRadius;
+      this.y = cy + sinA * this.orbitRadius + bob;
+
+      // face along the tangent for a nice “flying” look
+      const tx = -sinA;
+      const ty =  cosA;
+
+      // use a calmer depth signal (no bob) and stronger smoothing
+      const depthRaw = this.orbitBaseRadius || this.orbitRadius;
+      if (this.depthSmooth == null) this.depthSmooth = depthRaw;
+      this.depthSmooth += 0.06 * (depthRaw - this.depthSmooth);
+      this.depth = depthRaw;
+
+
     } else {
       // Default gentle drift (for currentEffect === null)
       const time = performance.now() * 0.003 + this.phase; // independent steady clock
@@ -252,13 +304,22 @@ class Banana {
   draw(ctx) {
     const drawSize = this.size;
 
+    // quick cull for non-breeze modes
+    if (currentEffect !== "breeze") {
+      const half = drawSize * 0.5;
+      if (this.x + half < 0 || this.x - half > canvas.width ||
+          this.y + half < 0 || this.y - half > canvas.height) {
+        return;
+      }
+    }
+
     // Special draw path for breeze: pivot from the stem (top center)
     if (currentEffect === "breeze") {
       ctx.save();
       ctx.translate(this.stemX, this.stemY);
       ctx.rotate(this.angle * Math.PI / 180);
       // Draw from the pivot downward (top-center at 0,0)
-      ctx.drawImage(bananaImg, -drawSize / 2, 0, drawSize, drawSize);
+      ctx.drawImage(bananaBitmap || bananaImg, -drawSize / 2, 0, drawSize, drawSize);
       ctx.restore();
       return;
     }
@@ -289,7 +350,7 @@ class Banana {
     }
 
     ctx.scale(scaleX, scaleY);
-    ctx.drawImage(bananaImg, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+    ctx.drawImage(bananaBitmap || bananaImg, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
     ctx.restore();
   }
 }
@@ -300,14 +361,16 @@ let modeIndex = 0;
 let currentEffect = null;
 
 // Added "breeze"
-const effects = [null, "spin", "wobble", "stretch", "popcorn", "breeze"];
+const effects = [null, "spin", "wobble", "stretch", "popcorn", "breeze", "orbit"];
 
 let lastEffect = effects[effects.length - 1];
 
 bananaImg.onload = () => {
   for (let i = 0; i < maxBananas; i++) {
-    bananas.push(new Banana());
-  }
+  const b = new Banana();
+  b.id = i;               // stable tiebreaker
+  bananas.push(b);
+}
   bananaHand.addEventListener("click", () => {
     modeIndex++;
     toggleView();
@@ -400,6 +463,58 @@ function toggleView() {
       // reset wind noise if you like (optional)
       // windGust = 0;  // etc.
 
+    } else if (currentEffect === "orbit") {
+  const cx = canvas.width * 0.5;
+  const cy = canvas.height * 0.5;
+
+    bananas.forEach((b, i) => {
+      const TAU = Math.PI * 2;
+
+      // Spread radii across the screen (inner ring to near-corners) with a little jitter
+      const diag = Math.hypot(canvas.width, canvas.height);
+      const minR = Math.min(canvas.width, canvas.height) * 0.18;  // inner ring
+      const maxR = diag * 0.40;                                   // outer reach
+
+      const t = (i + Math.random() * 0.3) / bananas.length;       // 0..1 spread
+      b.orbitRadius = minR + t * (maxR - minR);
+      b.orbitBaseRadius = b.orbitRadius; // fixed baseline for breathing
+
+      // Random starting angle
+      b.orbitAngle = Math.random() * TAU;
+
+      // Unique speed per banana: random base, slower when farther out, random direction
+      const dir  = Math.random() < 0.5 ? -1 : 1;
+      const base = 0.0012 + Math.random() * 0.0040;               // rad/frame
+      b.orbitBaseSpeed = dir * base * Math.pow(minR / b.orbitRadius, 0.6);
+      b.orbitSpeed     = b.orbitBaseSpeed;                         // initial speed
+
+      b.wobbleSeed = Math.random() * Math.PI * 2;
+      b.orbitRadiusTarget = b.orbitRadius;
+
+      // Vertical bob parameters
+      b.bobAmp   = 8 + Math.random() * 10;
+      b.bobSpeed = 0.01 + Math.random() * 0.02;
+      b.bobPhase = Math.random() * TAU;
+
+      // Per-banana breathing parameters
+      b.breathPhase = Math.random() * Math.PI * 2;
+      b.breathSpeed = 0.004 + Math.random() * 0.001;
+
+      // Depth proxy for painter's order
+      b.depth = b.orbitRadius;
+
+      // Reset unrelated state
+      b.scaleX = 1; b.scaleY = 1;
+      b.vx = 0; b.vy = 0; b.isPopping = false;
+
+      // Set first position
+      b.x = cx + Math.cos(b.orbitAngle) * b.orbitRadius;
+      b.y = cy + Math.sin(b.orbitAngle) * b.orbitRadius;
+      b.depth = b.orbitRadius;
+      b.depthSmooth = b.depth;           // start smoothed depth here
+    });
+
+
     // 3️⃣ DEFAULT ENTRANCE EFFECTS — generic spawn
     } else {
       bananas.forEach(b => {
@@ -427,6 +542,7 @@ function animate(t) {
 
   // advance passing-wave time (seconds)
   waveTime = performance.now() * 0.001;
+  nowSec = performance.now() * 0.001;
 
   // --- Wind update each frame (only really matters in breeze) ---
   const tt   = waveTime; // same timestamp
@@ -443,9 +559,32 @@ function animate(t) {
   windStrength = windStrength * 0.96 + targetWind * 0.04;
   windStrength = Math.max(-1.2, Math.min(1.2, windStrength));
 
+  // clear frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  bananas.forEach(b => {
-    b.update(t);
-    b.draw(ctx);
-  });
+
+  if (currentEffect === "orbit") {
+    // ---- Global orbit animation throttle: update every 2nd frame (~30fps) ----
+    orbitAnimFrame = (orbitAnimFrame + 1) | 0;
+const skipUpdate = (orbitAnimFrame & 1) === 1; // update every other frame (~30fps)
+
+    if (!skipUpdate) {
+      bananas.forEach(b => b.update(t));
+    }
+
+    // Occasionally sort by smoothed depth to reduce z-order churn
+    orbitSortFrame = (orbitSortFrame + 1) | 0;
+    if ((orbitSortFrame & 30) === 0) {
+      bananas.sort((a, b) => (a.depthSmooth - b.depthSmooth) || (a.id - b.id));
+    }
+
+    // Draw every frame
+    bananas.forEach(b => b.draw(ctx));
+
+  } else {
+    // Other effects (no throttle): update then draw
+    bananas.forEach(b => {
+      b.update(t);
+      b.draw(ctx);
+    });
+  }
 }
