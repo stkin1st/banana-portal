@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Banana Portal — How it works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="How the Banana Portal works: effects, animation loop, and little banana secrets." />
+  <style>
+    :root{
+      --bg:#0e0f11; --card:#14161a; --ink:#e9f0f2; --muted:#a9b6bd; --accent:#ffd04d;
+      --ring:#2a2f37;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{max-width:1000px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    header a.logo{display:inline-flex;align-items:center;gap:10px;font-weight:700}
+    header .badge{font-size:12px;padding:2px 8px;border:1px solid var(--ring);border-radius:999px;color:var(--muted)}
+    .hero{padding:28px;border:1px solid var(--ring);border-radius:16px;background:
+      radial-gradient(1200px 400px at 50% -150px, rgba(255,208,77,.15), transparent),
+      var(--card);
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .hero h1{margin:0 0 8px;font-size:34px;line-height:1.15}
+    .hero p{margin:0 0 16px;color:var(--muted)}
+    .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid var(--ring);background:#191c22;color:var(--ink)}
+    .btn--accent{background:var(--accent);color:#1a1400;border-color:#b28a00}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:24px}
+    .card{background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:16px}
+    .card h3{margin:0 0 8px;font-size:18px}
+    .card p{margin:8px 0;color:var(--muted)}
+    code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:#0b0c0f;border:1px solid #1c2026;border-radius:8px}
+    code{padding:2px 6px}
+    pre{padding:12px;overflow:auto}
+    .tiny{font-size:12px;color:var(--muted)}
+    footer{margin:28px 0 10px;color:var(--muted);font-size:13px}
+    .pill{display:inline-block;font-size:12px;padding:2px 8px;border:1px solid var(--ring);border-radius:999px;color:var(--muted);margin-right:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="logo" href="index.html">🍌 Banana Portal</a>
+      <span class="badge">Technical</span>
+    </header>
+
+    <section class="hero">
+      <h1>How it works (without ruining the magic)</h1>
+      <p>It’s just a single HTML canvas, a banana image, and a bunch of little behaviors. The goal: smooth, hypnotic motion at 60fps on a toaster.</p>
+      <div class="cta">
+        <a class="btn btn--accent" href="index.html">Open the Portal</a>
+        <a class="btn" href="#effects">Jump to the effects</a>
+      </div>
+    </section>
+
+    <section id="overview" class="grid">
+      <div class="card">
+        <h3>Engine</h3>
+        <p>JavaScript + <code>requestAnimationFrame</code> drives an animation loop. Each banana is a tiny state machine: position, angle, velocity, and some personality seeds.</p>
+      </div>
+      <div class="card">
+        <h3>Rendering</h3>
+        <p>Everything is drawn to a single <code>&lt;canvas&gt;</code>. We keep draw calls minimal, reuse one banana image, and avoid layout thrash.</p>
+      </div>
+      <div class="card">
+        <h3>Responsiveness</h3>
+        <p>The canvas resizes to the viewport; effects recompute their parameters on entry so it still looks right on phones, tablets, and 4k monitors.</p>
+      </div>
+    </section>
+
+    <h2 id="effects" style="margin-top:28px">Effects (fun + technical)</h2>
+    <div class="grid">
+      <div class="card">
+        <span class="pill">Spin</span>
+        <h3>Clean, steady rotation</h3>
+        <p><strong>Fun:</strong> A calm carousel of bananas.<br>
+           <strong>Tech:</strong> Constant angular velocity with a random phase per banana.</p>
+        <p><a class="btn tiny" href="index.html#effect=spin">Try it live</a></p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Wobble</span>
+        <h3>Nervous little shimmy</h3>
+        <p><strong>Fun:</strong> Tiny tremors like a caffeine buzz.<br>
+           <strong>Tech:</strong> Low-amplitude angle oscillation with noise jitter.</p>
+        <p><a class="btn tiny" href="index.html#effect=wobble">Try it live</a></p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Stretch</span>
+        <h3>Cartoon squash &amp; stretch</h3>
+        <p><strong>Fun:</strong> Looney-tunes elasticity.<br>
+           <strong>Tech:</strong> Per-banana scaleX/scaleY modulated by a phase.</p>
+        <p><a class="btn tiny" href="index.html#effect=stretch">Try it live</a></p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Popcorn</span>
+        <h3>Floor, bounce, trick, repeat</h3>
+        <p><strong>Fun:</strong> Little parkour stunts.<br>
+           <strong>Tech:</strong> Gravity + bounce energy + occasional trick spins and hero jumps.</p>
+        <p><a class="btn tiny" href="index.html#effect=popcorn">Try it live</a></p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Breeze</span>
+        <h3>Wind through banana-grass</h3>
+        <p><strong>Fun:</strong> Gentle swaying field.<br>
+           <strong>Tech:</strong> Spring-damper toward a filtered wind target with layered noise gusts.</p>
+        <p><a class="btn tiny" href="index.html#effect=breeze">Try it live</a></p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Orbit</span>
+        <h3>Parallax rings around center</h3>
+        <p><strong>Fun:</strong> A galaxy of fruit.<br>
+           <strong>Tech:</strong> Per-banana radius, angle, base speed; subtle “breathing” radius + depth-sorted drawing.</p>
+        <p><a class="btn tiny" href="index.html#effect=orbit">Try it live</a></p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:28px">Nuts & bolts</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Core loop</h3>
+        <pre><code>// Pseudocode
+requestAnimationFrame(loop)
+updateAllBananas()
+clearCanvas()
+sortIfNeeded()
+drawAllBananas()</code></pre>
+        <p class="tiny">We keep work per frame predictable. Most effects share the same draw path.</p>
+      </div>
+      <div class="card">
+        <h3>Performance tricks</h3>
+        <ul class="tiny">
+          <li>One image sprite reused everywhere</li>
+          <li>Depth sorting throttled (orbit only)</li>
+          <li>Math cached (sin/cos) when helpful</li>
+          <li>No layouts during draw</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Easter eggs</h3>
+        <p class="tiny">“247” shows up a lot. It’s an inside joke involving oscillating salmon. Long story.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>© oscillatingbanana — “what happens when you mix ChatGPT with a banana?”</p>
+    </footer>
+  </div>
+
+  <!-- Optional: if your main page reads #effect=..., nothing else to do.
+       If not, you can add a tiny helper script on index.html later to read location.hash
+       and switch effects on load. -->
+</body>
+</html>
